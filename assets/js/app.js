@@ -37,8 +37,17 @@ class Boy {
     ctx.drawImage(imageBoy, this.x, this.y, this.width, this.height)
     this.calculateCenterPos()
   }
+  isTouchedKinoko(){
+    const distanceX = Math.abs(Kinoko.centerX - this.centerX) // TODO 絶対値
+    const distanceY = Math.abs(Kinoko.centerY - this.centerY)
+    return distanceX <= 20 && distanceY <= 20
+  }
   getKinoko(){
-
+    if (this.isTouchedKinoko()) {
+      getKinokoText.innerText = 'きのこゲット！'
+      kinokoCount++;
+      kinokoCountText.innerText = kinokoCount
+    }
   }
 }
 // TODO あとでextends使う
@@ -63,24 +72,20 @@ class Kinoko {
     if (this.y > 500) {
       this.x = makeRandomNum(720, 10)
       this.y = -100
+      this.speed = makeRandomNum(5, 1)
     }
     ctx.drawImage(imageKinoko, this.x, this.y, this.width, this.height)
   }
-  isTouchedBoy(){
-    const distanceX = Math.abs(this.centerX - BOY.centerX) // TODO 絶対値
-    const distanceY = Math.abs(this.centerY - BOY.centerY)
-    return distanceX <= 20 && distanceY <= 20
-  }
-  getKinoko() { // TODO BOYのメソッド
-    if (this.isTouchedBoy()) {
-      this.isCatchedKinoko = true
-      this.x = makeRandomNum(720, 10)
-      this.y = makeRandomNum(10, 1)
-      getKinokoText.innerText = 'きのこゲット！'
-      kinokoCount++;
-      kinokoCountText.innerText = kinokoCount
-    }
-  }
+  // getKinoko() { // TODO BOYのメソッド
+  //   if (this.isTouchedKinoko()) {
+  //     this.isCatchedKinoko = true
+  //     this.x = makeRandomNum(720, 10)
+  //     this.y = makeRandomNum(10, 1)
+  //     getKinokoText.innerText = 'きのこゲット！'
+  //     kinokoCount++;
+  //     kinokoCountText.innerText = kinokoCount
+  //   }
+  // }
 }
 
 let BOY = new Boy(0, 18, 34)
@@ -115,9 +120,9 @@ makeKinokos()
 function mainLoop() {
   ctx.clearRect(0,0,800,500)
   BOY.move()
+  BOY.getKinoko()
   Kinokos.forEach((kinoko) => {
     kinoko.move()
-    kinoko.getKinoko()
   })
   window.requestAnimationFrame(mainLoop)
 }
