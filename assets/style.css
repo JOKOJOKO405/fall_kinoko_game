@@ -1,0 +1,22 @@
+@charset 'utf-8';
+*,
+*::before,
+*::after{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#canvas{
+  background-color:honeydew;
+}
+.kinoko-text{
+  font-size: 30px;
+  font-weight: bold;
+  color: coral;
+}
+.kinoko-count{
+  font-weight: bold;
+  font-size: 20px;
+  color: coral;
+}
