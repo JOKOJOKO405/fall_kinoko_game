@@ -75,6 +75,9 @@ class Boy {
     }
     ctx.drawImage(imageBoy, this.x, this.y, this.width, this.height)
     this.calculateCenterPos()
+    setTimeout(() => {
+      this.isSlow = false
+    }, 10000);
   }
 }
 // TODO あとでextends使う
