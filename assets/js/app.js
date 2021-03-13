@@ -113,16 +113,18 @@ makeKinokos()
 
 
 function mainLoop() {
+  let loopId = window.requestAnimationFrame(mainLoop)
   ctx.clearRect(0,0,800,500)
   BOY.move()
   BOY.getKinoko()
   Kinokos.forEach((kinoko) => {
     kinoko.move()
   })
-  window.requestAnimationFrame(mainLoop)
+  if(kinokoCount > 10){
+    cancelAnimationFrame(loopId)
+  }
 }
-
-window.requestAnimationFrame(mainLoop)
+requestAnimationFrame(mainLoop)
 
 window.onkeydown = (e) => {
   BOY.move(e.code)
