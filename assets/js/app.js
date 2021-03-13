@@ -21,7 +21,7 @@ const kinokoCountText = document.getElementById('catchKinoko')
 const timerText = document.getElementById('timer')
 let timerCount = 0
 let kinokoCount = 0
-const kinokoXposMax = 780
+const kinokoXposMax = 772
 const kinokoXposMin = 20
 
 // タイマー
@@ -57,19 +57,19 @@ class Boy extends Character{
     this.isSlow = false
   }
   move(keyEvent) {
-    if(keyEvent === 'ArrowRight' && this.x < 780){
-      this.x += 20
+    if(keyEvent === 'ArrowRight' && this.x < 774){
+      this.x += 18
     }else if(keyEvent === 'ArrowLeft' && this.x > 0){
-      this.x -= 20
+      this.x -= 18
     }
     super.draw(imageBoy)
     super.calculateCenterPos()
   }
   slowMove(keyEvent){
-    if(keyEvent === 'ArrowRight' && this.x < 780){
-      this.x += 5
+    if(keyEvent === 'ArrowRight' && this.x < 774){
+      this.x += 3
     }else if(keyEvent === 'ArrowLeft' && this.x > 0){
-      this.x -= 5
+      this.x -= 3
     }
     super.draw(imageBoy)
     super.calculateCenterPos()
@@ -195,7 +195,7 @@ const makePoisonKinokos = () => {
 
 
 
-let boy = new Boy(800 / 2, 500-34, 18, 34)
+let boy = new Boy(792 / 2, 500-34, 18, 34)
 let specialKinoko = new SpecialKinoko(makeRandomNum(780, 20), -50, 20, 20)
 
 function mainLoop() {
