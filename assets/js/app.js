@@ -199,6 +199,9 @@ function mainLoop() {
   })
   if(kinokoCount > 10){
     cancelAnimationFrame(loopId)
+    window.onkeydown = (e) => {
+      e.preventDefault();
+    }
   }
 }
 requestAnimationFrame(mainLoop)
