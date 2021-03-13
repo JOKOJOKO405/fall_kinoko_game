@@ -1,6 +1,7 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+// 画像設定
 const imageBoy = new Image()
 const imageKinoko = new Image()
 const imagePoisonKinoko = new Image()
@@ -10,14 +11,22 @@ imageKinoko.src = './assets/img/ico_mushroom2_12.gif'
 imagePoisonKinoko.src = './assets/img/ico_mushroom2_15.gif'
 imageSpecialKinoko.src = './assets/img/ico_mushroom2_2.gif'
 
+// 複数きのこ配列
 let Kinokos = []
 let PoisonKinokos = []
 
+// 表示テキスト
 const getKinokoText = document.getElementById('text')
 const kinokoCountText = document.getElementById('catchKinoko')
+const timerText = document.getElementById('timer')
+let timerCount = 0
 let kinokoCount = 0
 const kinokoXposMax = 780
 const kinokoXposMin = 20
+
+// タイマー
+let timer = 10
+timerText.innerText = timer;
 
 // TODO あとで細かくclass作る
 class Boy {
@@ -242,7 +251,8 @@ function mainLoop() {
     poisonKinoko.move()
   })
 
-  if(kinokoCount > 10){
+  if(!timer){
+    stopCountDown()
     cancelAnimationFrame(loopId)
     window.onkeydown = (e) => {
       e.preventDefault();
@@ -253,4 +263,22 @@ requestAnimationFrame(mainLoop)
 
 window.onkeydown = (e) => {
   boy.isSlow ? boy.slowMove(e.code) : boy.move(e.code)
+}
+
+let intervalId;
+
+const startCountDown = () => {
+  intervalId = setInterval(()=>{
+    timer --;
+    timerText.innerText = timer;
+    if(timer <= 0){
+      clearInterval(intervalId);
+    }
+  }, 1000)
+}
+const stopCountDown = () => {
+  clearInterval(intervalId);
+}
+window.onload = () => {
+  startCountDown()
 }
