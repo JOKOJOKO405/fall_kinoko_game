@@ -4,9 +4,11 @@ const ctx = canvas.getContext('2d')
 const imageBoy = new Image()
 const imageKinoko = new Image()
 const imagePoisonKinoko = new Image()
+const imageSpecialKinoko = new Image()
 imageBoy.src = './assets/img/ico_boy1_8.gif'
 imageKinoko.src = './assets/img/ico_mushroom2_12.gif'
 imagePoisonKinoko.src = './assets/img/ico_mushroom2_15.gif'
+imageSpecialKinoko.src = './assets/img/ico_mushroom2_2.gif'
 
 let Kinokos = []
 let PoisonKinokos = []
@@ -67,6 +69,12 @@ class Boy {
       }
     })
   }
+  touchSpecialKinoko(){
+    if(this.computedDistance(specialKinoko)){
+      getKinokoText.innerText = 'スペシャルきのこゲット！！'
+      this.isSlow = false
+    }
+  }
   slowMove(keyEvent){
     if(keyEvent === 'ArrowRight' && this.x < 780){
       this.x += 5
@@ -77,7 +85,7 @@ class Boy {
     this.calculateCenterPos()
     setTimeout(() => {
       this.isSlow = false
-    }, 10000);
+    }, makeRandomNum(20000, 5000));
   }
 }
 // TODO あとでextends使う
@@ -89,7 +97,6 @@ class Kinoko {
     this.centerY = this.y + height / 2
     this.width = width
     this.height = height
-    this.isCatchedKinoko = false
     this.speed = makeRandomNum(5, 1)
   }
   calculateCenterPos(){
@@ -120,7 +127,6 @@ class PoisonKinoko{
     this.centerY = this.y + height / 2
     this.width = width
     this.height = height
-    this.isCatchedKinoko = false
     this.speed = makeRandomNum(5, 1)
   }
   calculateCenterPos(){
@@ -142,8 +148,41 @@ class PoisonKinoko{
   }
 }
 
+class SpecialKinoko{
+  constructor(x, y, width = 20, height = 20) {
+    this.x = x
+    this.y = y
+    this.centerX = this.x + width / 2
+    this.centerY = this.y + height / 2
+    this.width = width
+    this.height = height
+    this.speed = 10
+  }
+  calculateCenterPos(){
+    this.centerX = this.x + this.width / 2
+    this.centerY = this.y + this.height / 2
+  }
+  move() {
+    this.y += this.speed
+    this.calculateCenterPos()
+    if (this.y > 500) {
+      setTimeout(() => {
+        this.reuseKinoko()
+      }, 5000)
+    }
+    ctx.drawImage(imageSpecialKinoko, this.x, this.y, this.width, this.height)
+  }
+  reuseKinoko(){
+    this.x = makeRandomNum(kinokoXposMax, kinokoXposMin)
+    this.y = -100
+  }
+}
+
 imageBoy.onload = () => {
   ctx.drawImage(imageBoy, boy.x, boy.y, boy.width, boy.height)
+}
+imageSpecialKinoko.onload = () => {
+  ctx.drawImage(imageSpecialKinoko, boy.x, boy.y, boy.width, boy.height)
 }
 imageKinoko.onload = () => {
   Kinokos.forEach((kinoko) => {
@@ -187,6 +226,7 @@ makePoisonKinokos()
 
 
 let boy = new Boy(0, 18, 34)
+let specialKinoko = new SpecialKinoko(makeRandomNum(780, 20), -50)
 
 function mainLoop() {
   let loopId = window.requestAnimationFrame(mainLoop)
@@ -194,12 +234,14 @@ function mainLoop() {
   boy.move()
   boy.getKinoko()
   boy.touchPoisonKinoko()
+  specialKinoko.move()
   Kinokos.forEach((kinoko) => {
     kinoko.move()
   })
   PoisonKinokos.forEach((poisonKinoko) => {
     poisonKinoko.move()
   })
+
   if(kinokoCount > 10){
     cancelAnimationFrame(loopId)
     window.onkeydown = (e) => {
