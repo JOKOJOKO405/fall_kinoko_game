@@ -1,10 +1,18 @@
 @charset 'utf-8';
+@font-face {
+	font-family: PixelMplus10-Regular;
+	src: url('../fonts/PixelMplus10-Bold.ttf') format("truetype");
+	src: url('../fonts/PixelMplus10-Regular.ttf') format("truetype");
+}
 *,
 *::before,
 *::after{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+body{
+  font-family: PixelMplus10-Regular;
 }
 
 #canvas{
