@@ -77,7 +77,7 @@ class Boy extends Character{
   getKinoko(){
     Kinokos.forEach((kinoko)=>{
       if(this.computedDistance(kinoko)){
-        kinoko.reuseKinoko()
+        kinoko.reuseKinoko(makeRandomNum(5, 1))
         getKinokoText.innerText = 'きのこゲット！'
         kinokoCount ++;
         kinokoCountText.innerText = kinokoCount
@@ -85,7 +85,7 @@ class Boy extends Character{
     })
     PoisonKinokos.forEach((poisonKinoko)=>{
       if(this.computedDistance(poisonKinoko)){
-        poisonKinoko.reuseKinoko()
+        poisonKinoko.reuseKinoko(makeRandomNum(5, 1))
         getKinokoText.innerText = '毒きのこだ！'
         this.isSlow = true
       }
@@ -116,7 +116,6 @@ class Kinoko extends Character {
   }
 }
 
-// TODO あとでextends 毒キノコ
 class PoisonKinoko extends Kinoko{
   constructor(x, y, width, height){
     super(x, y, width, height)
@@ -141,7 +140,7 @@ class SpecialKinoko extends Kinoko{
     this.calculateCenterPos()
     if (this.y > 500) {
       setTimeout(() => {
-        this.reuseKinoko()
+        this.reuseKinoko(this.speed)
       }, 5000)
     }
     super.draw(imageSpecialKinoko)
@@ -182,11 +181,10 @@ const makeKinokos = () => {
   }
   return kinoko
 }
-makeKinokos()
 
 const makePoisonKinokos = () => {
   let poisonKinoko = []
-  for (let i = 0; i < makeRandomNum(5,1); i++) {
+  for (let i = 0; i < makeRandomNum(20,15); i++) {
     const randumX = makeRandomNum(kinokoXposMax, kinokoXposMin)
     const randumY = makeRandomNum(10, 1)
     poisonKinoko[i] = new PoisonKinoko(randumX, randumY, 20, 20)
@@ -194,7 +192,7 @@ const makePoisonKinokos = () => {
   }
   return poisonKinoko
 }
-makePoisonKinokos()
+
 
 
 let boy = new Boy(800 / 2, 500-34, 18, 34)
@@ -252,6 +250,8 @@ const stopCountDown = () => {
 }
 window.onload = () => {
   startCountDown()
+  makePoisonKinokos()
+  makeKinokos()
   setTimeout(() => {
     specialKinoko.isReady = true
   }, makeRandomNum(3000, 15000));
