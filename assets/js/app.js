@@ -25,7 +25,7 @@ const kinokoXposMax = 780
 const kinokoXposMin = 20
 
 // タイマー
-let timer = 40
+let timer = 60
 timerText.innerText = timer;
 
 // TODO あとで細かくclass作る
@@ -82,9 +82,7 @@ class Boy {
   touchSpecialKinoko(){
     if(this.computedDistance(specialKinoko)){
       getKinokoText.innerText = 'スペシャルきのこゲット！！'
-      console.debug('get special kinoko')
       this.isSlow = false
-      console.debug(this.isSlow)
     }
   }
   slowMove(keyEvent){
@@ -165,7 +163,8 @@ class SpecialKinoko{
     this.centerY = this.y + height / 2
     this.width = width
     this.height = height
-    this.speed = 4
+    this.speed = 10
+    this.isReady = false
   }
   calculateCenterPos(){
     this.centerX = this.x + this.width / 2
@@ -244,13 +243,15 @@ function mainLoop() {
   boy.getKinoko()
   boy.touchPoisonKinoko()
   boy.touchSpecialKinoko()
-  specialKinoko.move()
   Kinokos.forEach((kinoko) => {
     kinoko.move()
   })
   PoisonKinokos.forEach((poisonKinoko) => {
     poisonKinoko.move()
   })
+  if(specialKinoko.isReady){
+    specialKinoko.move()
+  }
 
   if(!timer){
     stopCountDown()
@@ -289,4 +290,7 @@ const stopCountDown = () => {
 }
 window.onload = () => {
   startCountDown()
+  setTimeout(() => {
+    specialKinoko.isReady = true
+  }, makeRandomNum(3000, 15000));
 }
