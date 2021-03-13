@@ -28,22 +28,33 @@ const kinokoXposMin = 20
 let timer = 60
 timerText.innerText = timer;
 
-// TODO あとで細かくclass作る
-class Boy {
-  constructor(x, width, height) {
+class Character {
+  constructor(x, y, width, height) {
     this.x = x
-    this.y = 500 - height
+    this.y = y
     this.centerX = this.x + this.width / 2
     this.centerY = this.y + this.height / 2
-    this.speedY = 10
     this.width = width
     this.height = height
-    this.isSlow = false
   }
-  // センター座標の割り出し
+  computedDistance(obj){
+    const distanceX = Math.abs(obj.centerX - this.centerX)
+    const distanceY = Math.abs(obj.centerY - this.centerY)
+    return distanceX <= 20 && distanceY <= 20
+  }
   calculateCenterPos(){
     this.centerX = this.x + this.width / 2
     this.centerY = this.y + this.height / 2
+  }
+  draw(image){
+    ctx.drawImage(image, this.x, this.y, this.width, this.height)
+  }
+}
+
+class Boy extends Character{
+  constructor(x, y, width, height){
+    super(x, y, width, height)
+    this.isSlow = false
   }
   move(keyEvent) {
     if(keyEvent === 'ArrowRight' && this.x < 780){
@@ -51,13 +62,17 @@ class Boy {
     }else if(keyEvent === 'ArrowLeft' && this.x > 0){
       this.x -= 20
     }
-    ctx.drawImage(imageBoy, this.x, this.y, this.width, this.height)
-    this.calculateCenterPos()
+    super.draw(imageBoy)
+    super.calculateCenterPos()
   }
-  computedDistance(obj){
-    const distanceX = Math.abs(obj.centerX - this.centerX)
-    const distanceY = Math.abs(obj.centerY - this.centerY)
-    return distanceX <= 20 && distanceY <= 20
+  slowMove(keyEvent){
+    if(keyEvent === 'ArrowRight' && this.x < 780){
+      this.x += 5
+    }else if(keyEvent === 'ArrowLeft' && this.x > 0){
+      this.x -= 5
+    }
+    super.draw(imageBoy)
+    super.calculateCenterPos()
   }
   getKinoko(){
     Kinokos.forEach((kinoko)=>{
@@ -68,107 +83,58 @@ class Boy {
         kinokoCountText.innerText = kinokoCount
       }
     })
-  }
-  touchPoisonKinoko(){
     PoisonKinokos.forEach((poisonKinoko)=>{
       if(this.computedDistance(poisonKinoko)){
         poisonKinoko.reuseKinoko()
         getKinokoText.innerText = '毒きのこだ！'
         this.isSlow = true
-        console.debug(this.isSlow)
       }
     })
-  }
-  touchSpecialKinoko(){
     if(this.computedDistance(specialKinoko)){
       getKinokoText.innerText = 'スペシャルきのこゲット！！'
       this.isSlow = false
     }
   }
-  slowMove(keyEvent){
-    if(keyEvent === 'ArrowRight' && this.x < 780){
-      this.x += 5
-    }else if(keyEvent === 'ArrowLeft' && this.x > 0){
-      this.x -= 5
-    }
-    ctx.drawImage(imageBoy, this.x, this.y, this.width, this.height)
-    this.calculateCenterPos()
-  }
 }
-// TODO あとでextends使う
-class Kinoko {
-  constructor(x, y, width = 20, height = 20) {
-    this.x = x
-    this.y = y
-    this.centerX = this.x + width / 2
-    this.centerY = this.y + height / 2
-    this.width = width
-    this.height = height
+class Kinoko extends Character {
+  constructor(x, y, width, height){
+    super(x, y, width, height)
     this.speed = makeRandomNum(5, 1)
-  }
-  calculateCenterPos(){
-    this.centerX = this.x + this.width / 2
-    this.centerY = this.y + this.height / 2
   }
   move() {
     this.y += this.speed
     this.calculateCenterPos()
     if (this.y > 500) {
-      this.reuseKinoko()
+      this.reuseKinoko(makeRandomNum(5, 1))
     }
-    ctx.drawImage(imageKinoko, this.x, this.y, this.width, this.height)
+    super.draw(imageKinoko)
   }
-  reuseKinoko(){
+  reuseKinoko(speed){
     this.x = makeRandomNum(kinokoXposMax, kinokoXposMin)
     this.y = -100
-    this.speed = makeRandomNum(5, 1)
+    this.speed = speed
   }
 }
 
 // TODO あとでextends 毒キノコ
-class PoisonKinoko{
-  constructor(x, y, width = 20, height = 20) {
-    this.x = x
-    this.y = y
-    this.centerX = this.x + width / 2
-    this.centerY = this.y + height / 2
-    this.width = width
-    this.height = height
-    this.speed = makeRandomNum(5, 1)
-  }
-  calculateCenterPos(){
-    this.centerX = this.x + this.width / 2
-    this.centerY = this.y + this.height / 2
+class PoisonKinoko extends Kinoko{
+  constructor(x, y, width, height){
+    super(x, y, width, height)
   }
   move() {
-    this.y += this.speed
-    this.calculateCenterPos()
-    if (this.y > 500) {
-      this.reuseKinoko()
-    }
-    ctx.drawImage(imagePoisonKinoko, this.x, this.y, this.width, this.height)
+    super.move()
+    super.draw(imagePoisonKinoko)
   }
   reuseKinoko(){
-    this.x = makeRandomNum(kinokoXposMax, kinokoXposMin)
-    this.y = -100
-    this.speed = makeRandomNum(5, 1)
+    super.reuseKinoko(makeRandomNum(5, 1))
   }
 }
 
-class SpecialKinoko{
-  constructor(x, y, width = 20, height = 20) {
-    this.x = x
-    this.y = y
-    this.centerX = this.x + width / 2
-    this.centerY = this.y + height / 2
-    this.width = width
-    this.height = height
+class SpecialKinoko extends Kinoko{
+  constructor(x, y, width, height){
+    super(x, y, width, height)
     this.speed = 10
     this.isReady = false
-  }
-  calculateCenterPos(){
-    this.centerX = this.x + this.width / 2
-    this.centerY = this.y + this.height / 2
   }
   move() {
     this.y += this.speed
@@ -178,11 +144,10 @@ class SpecialKinoko{
         this.reuseKinoko()
       }, 5000)
     }
-    ctx.drawImage(imageSpecialKinoko, this.x, this.y, this.width, this.height)
+    super.draw(imageSpecialKinoko)
   }
   reuseKinoko(){
-    this.x = makeRandomNum(kinokoXposMax, kinokoXposMin)
-    this.y = -100
+    super.reuseKinoko(10)
   }
 }
 
@@ -207,13 +172,12 @@ const makeRandomNum = (max, min) => {
   const num = Math.floor(Math.random() * (max - min + 1) + min)
   return num
 }
-
 const makeKinokos = () => {
   let kinoko = []
-  for (let i = 0; i < makeRandomNum(10,5); i++) {
+  for (let i = 0; i < makeRandomNum(25, 20); i++) {
     const randumX = makeRandomNum(kinokoXposMax, kinokoXposMin)
     const randumY = makeRandomNum(10, 1)
-    kinoko[i] = new Kinoko(randumX, randumY)
+    kinoko[i] = new Kinoko(randumX, randumY, 20, 20)
     Kinokos.push(kinoko[i])
   }
   return kinoko
@@ -225,7 +189,7 @@ const makePoisonKinokos = () => {
   for (let i = 0; i < makeRandomNum(5,1); i++) {
     const randumX = makeRandomNum(kinokoXposMax, kinokoXposMin)
     const randumY = makeRandomNum(10, 1)
-    poisonKinoko[i] = new PoisonKinoko(randumX, randumY)
+    poisonKinoko[i] = new PoisonKinoko(randumX, randumY, 20, 20)
     PoisonKinokos.push(poisonKinoko[i])
   }
   return poisonKinoko
@@ -233,16 +197,14 @@ const makePoisonKinokos = () => {
 makePoisonKinokos()
 
 
-let boy = new Boy(0, 18, 34)
-let specialKinoko = new SpecialKinoko(makeRandomNum(780, 20), -50)
+let boy = new Boy(800 / 2, 500-34, 18, 34)
+let specialKinoko = new SpecialKinoko(makeRandomNum(780, 20), -50, 20, 20)
 
 function mainLoop() {
   let loopId = window.requestAnimationFrame(mainLoop)
   ctx.clearRect(0,0,800,500)
   boy.move()
   boy.getKinoko()
-  boy.touchPoisonKinoko()
-  boy.touchSpecialKinoko()
   Kinokos.forEach((kinoko) => {
     kinoko.move()
   })
