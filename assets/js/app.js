@@ -25,7 +25,7 @@ const kinokoXposMax = 780
 const kinokoXposMin = 20
 
 // タイマー
-let timer = 10
+let timer = 40
 timerText.innerText = timer;
 
 // TODO あとで細かくclass作る
@@ -75,13 +75,16 @@ class Boy {
         poisonKinoko.reuseKinoko()
         getKinokoText.innerText = '毒きのこだ！'
         this.isSlow = true
+        console.debug(this.isSlow)
       }
     })
   }
   touchSpecialKinoko(){
     if(this.computedDistance(specialKinoko)){
       getKinokoText.innerText = 'スペシャルきのこゲット！！'
+      console.debug('get special kinoko')
       this.isSlow = false
+      console.debug(this.isSlow)
     }
   }
   slowMove(keyEvent){
@@ -92,9 +95,6 @@ class Boy {
     }
     ctx.drawImage(imageBoy, this.x, this.y, this.width, this.height)
     this.calculateCenterPos()
-    setTimeout(() => {
-      this.isSlow = false
-    }, makeRandomNum(20000, 5000));
   }
 }
 // TODO あとでextends使う
@@ -165,7 +165,7 @@ class SpecialKinoko{
     this.centerY = this.y + height / 2
     this.width = width
     this.height = height
-    this.speed = 10
+    this.speed = 4
   }
   calculateCenterPos(){
     this.centerX = this.x + this.width / 2
@@ -243,6 +243,7 @@ function mainLoop() {
   boy.move()
   boy.getKinoko()
   boy.touchPoisonKinoko()
+  boy.touchSpecialKinoko()
   specialKinoko.move()
   Kinokos.forEach((kinoko) => {
     kinoko.move()
@@ -262,7 +263,14 @@ function mainLoop() {
 requestAnimationFrame(mainLoop)
 
 window.onkeydown = (e) => {
-  boy.isSlow ? boy.slowMove(e.code) : boy.move(e.code)
+  if(boy.isSlow){
+    boy.slowMove(e.code)
+    setTimeout(() => {
+      boy.isSlow = false
+    }, 5000);
+  }else{
+    boy.move(e.code)
+  }
 }
 
 let intervalId;
