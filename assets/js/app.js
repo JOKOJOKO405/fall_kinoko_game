@@ -170,7 +170,7 @@ imageBoy.onload = () => {
   ctx.drawImage(imageBoy, boy.x, boy.y, boy.width, boy.height)
 }
 imageSpecialKinoko.onload = () => {
-  ctx.drawImage(imageSpecialKinoko, boy.x, boy.y, boy.width, boy.height)
+  ctx.drawImage(imageSpecialKinoko, specialKinoko.x, specialKinoko.y, specialKinoko.width, specialKinoko.height)
 }
 imageKinoko.onload = () => {
   Kinokos.forEach((kinoko) => {
@@ -284,7 +284,3 @@ startBtn.addEventListener('click', (e) => {
   gameStart()
   requestAnimationFrame(mainLoop)
 })
-
-window.onload = () => {
-  ctx.clearRect(0,0,canvasW,canvasH)
-}
