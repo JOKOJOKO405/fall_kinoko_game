@@ -28,9 +28,12 @@ let spKinokoCount = 0
 const kinokoXposMax = 772
 const kinokoXposMin = 20
 
+const startBtn = document.getElementById('start')
+
 // タイマー
-let timer = 60
+let timer = 10
 timerText.innerText = timer;
+let isStarted = false
 
 // 画面設定
 const canvasH = 500
@@ -212,31 +215,32 @@ let boy = new Boy(792 / 2, boyStandPos, 18, 34)
 let specialKinoko = new SpecialKinoko(makeRandomNum(780, 20), -50, 20, 20)
 
 function mainLoop() {
-  let loopId = window.requestAnimationFrame(mainLoop)
-  ctx.clearRect(0,0,800,500)
-  boy.move()
-  boy.getKinoko()
-  Kinokos.forEach((kinoko) => {
-    kinoko.move()
-  })
-  PoisonKinokos.forEach((poisonKinoko) => {
-    poisonKinoko.move()
-  })
-  if(specialKinoko.isReady){
-    specialKinoko.move()
-  }
-
-  if(!timer){
-    stopCountDown()
-    getKinokoText.innerText = 'タイムアップ！'
-    cancelAnimationFrame(loopId)
-    window.onkeydown = (e) => {
-      e.preventDefault();
+  if(isStarted){
+    let loopId = window.requestAnimationFrame(mainLoop)
+    ctx.clearRect(0,0,canvasW,canvasH)
+    boy.move()
+    boy.getKinoko()
+    Kinokos.forEach((kinoko) => {
+      kinoko.move()
+    })
+    PoisonKinokos.forEach((poisonKinoko) => {
+      poisonKinoko.move()
+    })
+    if(specialKinoko.isReady){
+      specialKinoko.move()
     }
-    ctx.clearRect(0,0,792,500)
+  
+    if(!timer){
+      stopCountDown()
+      getKinokoText.innerText = 'タイムアップ！'
+      cancelAnimationFrame(loopId)
+      window.onkeydown = (e) => {
+        e.preventDefault();
+      }
+      ctx.clearRect(0,0,canvasW,canvasH)
+    }
   }
 }
-requestAnimationFrame(mainLoop)
 
 window.onkeydown = (e) => {
   if(boy.isSlow){
@@ -263,11 +267,22 @@ const startCountDown = () => {
 const stopCountDown = () => {
   clearInterval(intervalId);
 }
-window.onload = () => {
+const gameStart = () => {
   startCountDown()
   makePoisonKinokos()
   makeKinokos()
   setTimeout(() => {
     specialKinoko.isReady = true
   }, makeRandomNum(3000, 15000));
+}
+
+startBtn.addEventListener('click', (e) => {
+  console.debug(e)
+  isStarted = true;
+  gameStart()
+  requestAnimationFrame(mainLoop)
+})
+
+window.onload = () => {
+  ctx.clearRect(0,0,canvasW,canvasH)
 }
