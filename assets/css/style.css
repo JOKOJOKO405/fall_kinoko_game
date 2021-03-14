@@ -1,8 +1,14 @@
 @charset 'utf-8';
 @font-face {
 	font-family: PixelMplus10-Regular;
-	src: url('../fonts/PixelMplus10-Bold.ttf') format("truetype");
 	src: url('../fonts/PixelMplus10-Regular.ttf') format("truetype");
+}
+@font-face {
+	font-family: PixelMplus10-Bold;
+	src: url('../fonts/PixelMplus10-Bold.ttf') format("truetype");
+}
+html{
+  font-size: 16px;
 }
 *,
 *::before,
@@ -10,21 +16,67 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-body{
+  font-size: 1.0rem;
   font-family: PixelMplus10-Regular;
 }
-
+body{
+  padding: 32px;
+  line-height: 1.6;
+  color: #565656;
+}
+#wrapper{
+  width: 792px;
+}
 #canvas{
-  background-color:honeydew;
+  background: url('../img/bg.png') top center no-repeat;
+  margin-bottom: 24px;
 }
 .kinoko-text{
   font-size: 30px;
   font-weight: bold;
-  color: coral;
+  color: #ff3a68;
 }
 .kinoko-count{
   font-weight: bold;
-  font-size: 20px;
-  color: coral;
+  font-size: 24px;
+  color: #ff3a68;
+}
+.bottons-container,
+.kinoko-counter-container{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.kinoko-counter-container{
+  justify-content: center;
+}
+.kinoko-counter-container > p:not(:last-child){
+  margin-right: 24px;
+}
+.button{
+  border: none;
+  padding: 12px 16px;
+  font-family: PixelMplus10-Bold;
+  width: 200px;
+  border-radius: 8px;
+  color: #fff;
+}
+.button.easy{
+  background-color: #00c389;
+}
+.button.normal{
+  background-color: #ffca58;
+}
+.button.hard{
+  background-color: #ff4458;
+}
+.text-container{
+  text-align: center;
+}
+.count-timer{
+  font-size: 32px;
+  color: #ff3a68;
+  font-family: PixelMplus10-Bold;
 }

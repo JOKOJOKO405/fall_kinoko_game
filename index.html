@@ -8,11 +8,24 @@
     <link rel="stylesheet" href="./assets/css/style.css">
   </head>
   <body>
-    <canvas id="canvas" width="792" height="500">
-    </canvas>
-    <p id="text" class="kinoko-text"></p>
-    <p>とったきのこ <span id="catchKinoko" class="kinoko-count">0</span> 個</p>
-    <p id="timer" class="count-timer"></p>
+    <div id="wrapper">
+      <canvas id="canvas" width="792" height="500">
+      </canvas>
+      <div id="start" class="bottons-container">
+        <button id="easy" class="button easy">かんたん</button>
+        <button id="normal" class="button normal">ふつう</button>
+        <button id="hard" class="button hard">むりゲー</button>
+      </div>
+      <div class="text-container">
+        <p id="text" class="kinoko-text"></p>
+        <div class="kinoko-counter-container">
+          <p>とったきのこ <span id="kinoko" class="kinoko-count">0</span> 個</p>
+          <p>スペシャルきのこ <span id="specialKinoko" class="kinoko-count">0</span> 個</p>
+          <p>どくきのこ <span id="poisonKinoko" class="kinoko-count">0</span> 個</p>
+        </div>
+        <p>あと <span id="timer" class="count-timer">0</span> びょう</p>
+      </div>
+    </div>
     <script src="./assets/js/app.js"></script>
   </body>
 </html>
