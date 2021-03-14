@@ -17,10 +17,14 @@ let PoisonKinokos = []
 
 // 表示テキスト
 const getKinokoText = document.getElementById('text')
-const kinokoCountText = document.getElementById('catchKinoko')
+const kinokoCountText = document.getElementById('normalKinoko')
+const poisonKinokoCountText = document.getElementById('poisonKinoko')
+const spKinokoCountText = document.getElementById('specialKinoko')
 const timerText = document.getElementById('timer')
 let timerCount = 0
 let kinokoCount = 0
+let poisonKinokoCount = 0
+let spKinokoCount = 0
 const kinokoXposMax = 772
 const kinokoXposMin = 20
 
@@ -28,6 +32,11 @@ const kinokoXposMin = 20
 let timer = 60
 timerText.innerText = timer;
 
+// 画面設定
+const canvasH = 500
+const canvasW = 792
+const kinokoBorderLine = 500 - 32 - 20
+const boyStandPos = 500 - 32 - 34
 class Character {
   constructor(x, y, width, height) {
     this.x = x
@@ -88,10 +97,14 @@ class Boy extends Character{
         poisonKinoko.reuseKinoko(makeRandomNum(5, 1))
         getKinokoText.innerText = '毒きのこだ！'
         this.isSlow = true
+        poisonKinokoCount ++;
+        poisonKinokoCountText.innerText = poisonKinokoCount
       }
     })
     if(this.computedDistance(specialKinoko)){
       getKinokoText.innerText = 'スペシャルきのこゲット！！'
+      spKinokoCount ++;
+      spKinokoCountText.innerText = spKinokoCount
       this.isSlow = false
     }
   }
@@ -104,7 +117,7 @@ class Kinoko extends Character {
   move() {
     this.y += this.speed
     this.calculateCenterPos()
-    if (this.y > 500) {
+    if (this.y > kinokoBorderLine) {
       this.reuseKinoko(makeRandomNum(5, 1))
     }
     super.draw(imageKinoko)
@@ -138,7 +151,7 @@ class SpecialKinoko extends Kinoko{
   move() {
     this.y += this.speed
     this.calculateCenterPos()
-    if (this.y > 500) {
+    if (this.y > kinokoBorderLine) {
       setTimeout(() => {
         this.reuseKinoko(this.speed)
       }, 5000)
@@ -195,7 +208,7 @@ const makePoisonKinokos = () => {
 
 
 
-let boy = new Boy(792 / 2, 500-34, 18, 34)
+let boy = new Boy(792 / 2, boyStandPos, 18, 34)
 let specialKinoko = new SpecialKinoko(makeRandomNum(780, 20), -50, 20, 20)
 
 function mainLoop() {
