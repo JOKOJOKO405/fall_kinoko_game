@@ -76,9 +76,9 @@ class Boy extends Character{
   }
   slowMove(keyEvent){
     if(keyEvent === 'ArrowRight' && this.x < 774){
-      this.x += 3
-    }else if(keyEvent === 'ArrowLeft' && this.x > 0){
       this.x -= 3
+    }else if(keyEvent === 'ArrowLeft' && this.x > 0){
+      this.x += 3
     }
     super.draw(imageBoy)
     super.calculateCenterPos()
@@ -228,10 +228,12 @@ function mainLoop() {
 
   if(!timer){
     stopCountDown()
+    getKinokoText.innerText = 'タイムアップ！'
     cancelAnimationFrame(loopId)
     window.onkeydown = (e) => {
       e.preventDefault();
     }
+    ctx.clearRect(0,0,792,500)
   }
 }
 requestAnimationFrame(mainLoop)
@@ -255,7 +257,6 @@ const startCountDown = () => {
     timerText.innerText = timer;
     if(timer <= 0){
       clearInterval(intervalId);
-      getKinokoText.innerText = 'タイムアップ！'
     }
   }, 1000)
 }
