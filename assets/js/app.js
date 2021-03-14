@@ -239,6 +239,8 @@ function mainLoop() {
       }
       ctx.clearRect(0,0,canvasW,canvasH)
     }
+  }else{
+    cancelAnimationFrame(loopId)
   }
 }
 
