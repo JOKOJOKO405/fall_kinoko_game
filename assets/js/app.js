@@ -255,6 +255,7 @@ const startCountDown = () => {
     timerText.innerText = timer;
     if(timer <= 0){
       clearInterval(intervalId);
+      getKinokoText.innerText = 'タイムアップ！'
     }
   }, 1000)
 }
