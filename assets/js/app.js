@@ -14,6 +14,7 @@ imageSpecialKinoko.src = './assets/img/ico_mushroom2_2.gif'
 // 複数きのこ配列
 let Kinokos = []
 let PoisonKinokos = []
+let spKinokos = []
 
 let gameObjs = []
 
@@ -31,9 +32,10 @@ const kinokoXposMax = 772
 const kinokoXposMin = 20
 
 const startBtn = document.getElementById('start')
+const resetBtn = document.getElementById('reset')
 
 // タイマー
-let timer = 10
+let timer = 30
 timerText.innerText = timer;
 let isStarted = false
 
@@ -71,8 +73,14 @@ class Boy extends GameObjects{
     super(x, y, width, height)
     this.isSlow = false
   }
-  move(keyEvent) { // TODO move → updateに変更
+  update(keyEvent) {
     let speed = this.isSlow ? -3 : 18;
+    if(this.isSlow){
+      setTimeout(() => {
+        this.isSlow = false
+      }, 5000)
+    }
+
     if(keyEvent === 'ArrowRight' && this.x < 774){
       this.x += speed
     }else if(keyEvent === 'ArrowLeft' && this.x > 0){
@@ -113,7 +121,7 @@ class Kinoko extends GameObjects {
     super(x, y, width, height)
     this.speed = makeRandomNum(5, 1)
   }
-  move() {
+  update() {
     this.y += this.speed
     this.calculateCenterPos()
     if (this.y > kinokoBorderLine) {
@@ -132,8 +140,8 @@ class PoisonKinoko extends Kinoko{
   constructor(x, y, width, height){
     super(x, y, width, height)
   }
-  move() {
-    super.move()
+  update() {
+    super.update()
     super.draw(imagePoisonKinoko)
   }
   reuseKinoko(){
@@ -150,7 +158,7 @@ class SpecialKinoko extends Kinoko{
       this.isReady = true
     }, makeRandomNum(3000, 15000));
   }
-  move() {
+  update() {
     if(!this.isReady) return // 早期リターン
 
     this.y += this.speed
@@ -166,23 +174,6 @@ class SpecialKinoko extends Kinoko{
     super.reuseKinoko(10)
   }
 }
-
-// imageBoy.onload = () => {
-//   ctx.drawImage(imageBoy, boy.x, boy.y, boy.width, boy.height)
-// }
-// imageSpecialKinoko.onload = () => {
-//   ctx.drawImage(imageSpecialKinoko, specialKinoko.x, specialKinoko.y, specialKinoko.width, specialKinoko.height)
-// }
-// imageKinoko.onload = () => {
-//   Kinokos.forEach((kinoko) => {
-//     kinoko.move()
-//   })
-// }
-// imagePoisonKinoko.onload = () => {
-//   PoisonKinokos.forEach((poisonKinoko) => {
-//     poisonKinoko.move()
-//   })
-// }
 
 const makeRandomNum = (max, min) => {
   const num = Math.floor(Math.random() * (max - min + 1) + min)
@@ -210,13 +201,22 @@ const makePoisonKinokos = () => {
   return poisonKinoko
 }
 
+const makeSpKinokos = () => {
+  for (let i = 0; i < 1; i++) {
+    const randumX = makeRandomNum(kinokoXposMax, kinokoXposMin)
+    spKinokos.push(new SpecialKinoko(randumX, -50, 20, 20))
+  }
+  console.debug(spKinokos)
+  return spKinokos
+}
+
 
 function mainLoop() {
   if(isStarted){
     let loopId = window.requestAnimationFrame(mainLoop)
     ctx.clearRect(0,0,canvasW,canvasH)
     gameObjs.forEach((gameObj) => {
-      gameObj.move()
+      gameObj.update()
     })  
     if(!timer){
       stopCountDown()
@@ -228,7 +228,7 @@ function mainLoop() {
       ctx.clearRect(0,0,canvasW,canvasH)
     }
   }else{
-    cancelAnimationFrame(loopId)
+    cancelAnimationFrame(mainLoop)
   }
 }
 
@@ -248,18 +248,26 @@ const stopCountDown = () => {
   clearInterval(intervalId);
 }
 const gameStart = () => {
+  if(!isStarted) return
+
   let boy = new Boy(792 / 2, boyStandPos, 18, 34)
-  let specialKinoko = new SpecialKinoko(makeRandomNum(780, 20), -50, 20, 20)
   window.onkeydown = (e) => {
-    boy.move(e.code)
+    boy.update(e.code)
   }
   startCountDown()
   makePoisonKinokos()
   makeKinokos()
+  makeSpKinokos()
+  requestAnimationFrame(mainLoop)
 }
 
 startBtn.addEventListener('click', (e) => {
   isStarted = true;
   gameStart()
-  requestAnimationFrame(mainLoop)
+  startBtn.style.display = 'none'
+})
+resetBtn.addEventListener('click', (e) => {
+  isStarted = false;
+  stopCountDown(intervalId)
+  location.href = './index.html'
 })
