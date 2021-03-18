@@ -35,7 +35,7 @@ const startBtn = document.getElementById('start')
 const resetBtn = document.getElementById('reset')
 
 // タイマー
-let timer = 30
+let timer = 40
 timerText.innerText = timer;
 let isStarted = false
 
@@ -124,7 +124,7 @@ class Boy extends GameObjects{
     })
     spKinokos.forEach((spKinoko)=>{
       if(this.computedDistance(spKinoko)){
-        spKinoko.reuseKinoko(makeRandomNum(5, 1))
+        spKinoko.reuseKinoko(7, -5000)
         getKinokoText.innerText = 'スペシャルきのこゲット！！'
         spKinokoCount ++;
         spKinokoCountText.innerText = spKinokoCount
@@ -146,9 +146,9 @@ class Kinoko extends GameObjects {
     }
     super.draw(imageKinoko)
   }
-  reuseKinoko(speed){
+  reuseKinoko(speed, y = -100){
     this.x = makeRandomNum(kinokoXposMax, kinokoXposMin)
-    this.y = -100
+    this.y = y
     this.speed = speed
   }
 }
@@ -169,7 +169,7 @@ class PoisonKinoko extends Kinoko{
 class SpecialKinoko extends Kinoko{
   constructor(x, y, width, height){
     super(x, y, width, height)
-    this.speed = 9
+    this.speed = 8
     this.isReady = false
     setTimeout(() => {
       this.isReady = true
@@ -188,7 +188,7 @@ class SpecialKinoko extends Kinoko{
     super.draw(imageSpecialKinoko)
   }
   reuseKinoko(){
-    super.reuseKinoko(10)
+    super.reuseKinoko(8, -5000)
   }
 }
 
