@@ -53,6 +53,7 @@ class GameObjects {
     this.width = width
     this.height = height
     gameObjs.push(this) 
+    console.debug(gameObjs)
   }
   computedDistance(obj){
     const distanceX = Math.abs(obj.centerX - this.centerX)
@@ -72,14 +73,11 @@ class Boy extends GameObjects{
   constructor(x, y, width, height){
     super(x, y, width, height)
     this.isSlow = false
+    this.slowCount = 0
   }
   update(keyEvent) {
     let speed = this.isSlow ? -3 : 18;
-    if(this.isSlow){
-      setTimeout(() => {
-        this.isSlow = false
-      }, 5000)
-    }
+    this.touchPoisonKinoko()
 
     if(keyEvent === 'ArrowRight' && this.x < 774){
       this.x += speed
@@ -89,6 +87,21 @@ class Boy extends GameObjects{
     super.draw(imageBoy)
     super.calculateCenterPos()
     this.getKinoko()
+  }
+  touchPoisonKinoko(){
+    let timeoutId;
+    // はじめて毒きのことった場合
+    if(this.isSlow && !this.slowCount){
+      timeoutId = setTimeout(() => {
+        this.isSlow = false
+        this.slowCount = 0
+      }, 5000)
+    // 連続で取った場合 
+    }else if(this.isSlow && this.slowCount > 0){
+      clearTimeout(timeoutId)
+      this.isSlow = true
+      this.slowCount = 0
+    }
   }
   getKinoko(){
     Kinokos.forEach((kinoko)=>{
@@ -104,16 +117,20 @@ class Boy extends GameObjects{
         poisonKinoko.reuseKinoko(makeRandomNum(5, 1))
         getKinokoText.innerText = '毒きのこだ！'
         this.isSlow = true
+        this.slowCount ++;
         poisonKinokoCount ++;
         poisonKinokoCountText.innerText = poisonKinokoCount
       }
     })
-    if(this.computedDistance(specialKinoko)){
-      getKinokoText.innerText = 'スペシャルきのこゲット！！'
-      spKinokoCount ++;
-      spKinokoCountText.innerText = spKinokoCount
-      this.isSlow = false
-    }
+    spKinokos.forEach((spKinoko)=>{
+      if(this.computedDistance(spKinoko)){
+        spKinoko.reuseKinoko(makeRandomNum(5, 1))
+        getKinokoText.innerText = 'スペシャルきのこゲット！！'
+        spKinokoCount ++;
+        spKinokoCountText.innerText = spKinokoCount
+        this.isSlow = false
+      }
+    })
   }
 }
 class Kinoko extends GameObjects {
@@ -152,7 +169,7 @@ class PoisonKinoko extends Kinoko{
 class SpecialKinoko extends Kinoko{
   constructor(x, y, width, height){
     super(x, y, width, height)
-    this.speed = 10
+    this.speed = 9
     this.isReady = false
     setTimeout(() => {
       this.isReady = true
@@ -202,12 +219,13 @@ const makePoisonKinokos = () => {
 }
 
 const makeSpKinokos = () => {
+  let spKinoko = []
   for (let i = 0; i < 1; i++) {
     const randumX = makeRandomNum(kinokoXposMax, kinokoXposMin)
-    spKinokos.push(new SpecialKinoko(randumX, -50, 20, 20))
+    spKinoko[i] = new SpecialKinoko(randumX, -50, 20, 20)
+    spKinokos.push(spKinoko[i])
   }
-  console.debug(spKinokos)
-  return spKinokos
+  return spKinoko
 }
 
 

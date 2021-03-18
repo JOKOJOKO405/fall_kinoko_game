@@ -72,8 +72,26 @@ body{
 .text-container{
   text-align: center;
 }
+.button_top{
+  margin: 32px auto 0;
+  text-align: center;
+}
 .count-timer{
   font-size: 32px;
   color: #ff3a68;
   font-family: PixelMplus10-Bold;
+}
+
+.outer{
+  border: 2px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+}
+.inner{
+  border: 1px solid #ccc;
+  padding: 32px;
+  border-radius: 8px;
+}
+.inner > p{
+  margin-bottom: 16px;
 }
